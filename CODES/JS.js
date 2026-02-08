@@ -1,30 +1,57 @@
-// Mobile Menu Toggle
+// Mobile Menu Toggle - FIXED
 document.addEventListener('DOMContentLoaded', function() {
     const mobileMenuToggle = document.getElementById('mobileMenuToggle');
     const navMenu = document.getElementById('navMenu');
+    const body = document.body;
 
     if (mobileMenuToggle && navMenu) {
-        mobileMenuToggle.addEventListener('click', function() {
+        // Toggle menu when hamburger is clicked
+        mobileMenuToggle.addEventListener('click', function(e) {
+            e.stopPropagation(); // Prevent event from bubbling
             navMenu.classList.toggle('active');
             mobileMenuToggle.classList.toggle('active');
+            body.classList.toggle('menu-open');
+            
+            // Add/remove animation class
+            if (navMenu.classList.contains('active')) {
+                console.log('Menu opened');
+            } else {
+                console.log('Menu closed');
+            }
         });
 
         // Close menu when clicking on a nav link
         const navLinks = document.querySelectorAll('.nav-link');
         navLinks.forEach(link => {
-            link.addEventListener('click', function() {
+            link.addEventListener('click', function(e) {
                 navMenu.classList.remove('active');
                 mobileMenuToggle.classList.remove('active');
+                body.classList.remove('menu-open');
+                console.log('Menu closed - link clicked');
             });
         });
 
         // Close menu when clicking outside
         document.addEventListener('click', function(event) {
-            if (!navMenu.contains(event.target) && !mobileMenuToggle.contains(event.target)) {
+            const isClickInsideMenu = navMenu.contains(event.target);
+            const isClickOnToggle = mobileMenuToggle.contains(event.target);
+            
+            if (!isClickInsideMenu && !isClickOnToggle && navMenu.classList.contains('active')) {
                 navMenu.classList.remove('active');
                 mobileMenuToggle.classList.remove('active');
+                body.classList.remove('menu-open');
+                console.log('Menu closed - clicked outside');
             }
         });
+
+        // Prevent menu clicks from closing the menu
+        navMenu.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+    } else {
+        console.error('Mobile menu elements not found');
+        if (!mobileMenuToggle) console.error('mobileMenuToggle not found');
+        if (!navMenu) console.error('navMenu not found');
     }
 
     // Contact Form Submission (basic validation)
